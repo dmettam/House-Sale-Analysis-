@@ -64,5 +64,45 @@ df['bathrooms'].dropna(axis=0, inplace=True)
 print("number of NaN values for the column bedrooms :", df['bedrooms'].isnull().sum())
 print("number of NaN values for the column bathrooms :", df['bathrooms'].isnull().sum()) 
 
+# to give a rough idea of how many floor options there are
+floor_counts = df["floors"].value_counts().to_frame()
+floor_counts
+
+# multiple box plots and a violin plot shows that number of floors is
+# not a good indicator of price but whether or not it is waterfront 
+# property or not is a good indicator that shifts the price up. 
+floor_vio1 = sns.violinplot(x="floors", y="price", data=df)
+floor_vio2 = sns.violinplot(x="floors", y="price", hue="waterfront", data=df)
+
+
+# number of bathrooms is also a great indicator but there is clearly 
+# another value that is helping predict values
+bathbox1 = sns.boxplot(x="bathrooms", y="price", data=df)
+bathbox2 = sns.boxplot(x="bathrooms", y="price", hue="waterfront", data=df)
+
+# To see which aspects impact price most 
+# I was surprised to see that zipcode was not a good indicator 
+# I plan on changing zipcode to string variable and trying to 
+# plot it in different ways. 
+df.corr()['price'].sort_values()
+
+# to see the aspects with the greatest impact on price 
+features =["floors", "waterfront","lat" ,"bedrooms" ,"sqft_basement" ,"view" ,"bathrooms",
+           "sqft_living15","sqft_above","grade","sqft_living"]   
+X = df[features]
+Y = df['price']
+
+lm = LinearRegression()
+# The code (lm.fit(X,Y)) worked online but isn't working on Spyder (Python 3.8)
+# Debugging this now. 
+# It says 'ValueError: Input contains NaN, infinity or 
+# a value too large for dtype('float64')
+# If someone on GitHub see's this and knows what the issue is, please tell me. 
+# Thank you 
+lm.fit(X,Y)
+lm.score(X, Y)
+
+
+
 
 
